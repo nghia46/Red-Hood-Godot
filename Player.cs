@@ -7,11 +7,10 @@ public partial class Player : CharacterBody2D
 	[Export] public float CoyoteJumpTime = 0.2f;
 	bool canCoyoteJump = false;
 	float coyoteJumpTimer = 0.0f;
-	private AnimatedSprite2D animatedSprite2D;
-
+	bool isFacingRight;
+	AnimatedSprite2D animatedSprite2D;
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
-	bool isFacingRight;
 	public override void _Ready()
 	{
 		animatedSprite2D = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
@@ -22,7 +21,7 @@ public partial class Player : CharacterBody2D
 	{
 		Vector2 direction = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down");
 		Vector2 velocity = Velocity;
-		// Add the gravity. ]
+		// Add the gravity.
 		//note: if the player is on the floor reset the velocity
 		velocity.Y += !IsOnFloor() ? gravity * (float)delta : 0;
 		//Action
