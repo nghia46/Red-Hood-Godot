@@ -378,7 +378,6 @@ position_smoothing_enabled = true
 position = Vector2(623, 390)
 scale = Vector2(1, 1.01881)
 script = ExtResource("1_ykphl")
-CoyoteJumpTime = 10.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
 shape = SubResource("RectangleShape2D_4yfqj")
