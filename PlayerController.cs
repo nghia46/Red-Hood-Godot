@@ -1,7 +1,5 @@
-using Godot;
-
 // Declaring the namespace for the script
-namespace Redhood_player;
+namespace Redhood;
 // Declaring the partial class PlayerController, which extends CharacterBody2D
 
 public partial class PlayerController : CharacterBody2D
@@ -12,14 +10,14 @@ public partial class PlayerController : CharacterBody2D
 	[Export] public float JumpVelocity = -250f;
 
 	// Boolean to keep track of the player's facing direction
-	private bool _isFacingRight = true;
+	bool _isFacingRight = true;
 	// Reference to the AnimatedSprite2D node
-	private AnimatedSprite2D _animatedSprite2D;
+	AnimatedSprite2D _animatedSprite2D;
 
-	private CollisionShape2D _collisionShape2D;
+	CollisionShape2D _collisionShape2D;
 
 	// Gravity variable obtained from the project settings
-	private float _gravity = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
+	float _gravity = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
 
 	// Called when the node enters the scene tree for the first time
 	public override void _Ready()
@@ -34,9 +32,9 @@ public partial class PlayerController : CharacterBody2D
 	public override void _Process(double delta)
 	{
 		// Getting the player's velocity
-		var velocity = Velocity;
+		Vector2 velocity = Velocity;
 		// Getting the input direction and handling the movement/deceleration
-		var direction = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down");
+		Vector2 direction = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down");
 		//Velocity = velocity;
 
 		// Handling move action
@@ -53,7 +51,6 @@ public partial class PlayerController : CharacterBody2D
 
 	private void GetMoveAction(Vector2 direction, Vector2 velocity, bool isOnFloor)
 	{
-
 		// Handle jump
 		if (Input.IsActionJustPressed("ui_accept") && isOnFloor)
 		{
@@ -75,14 +72,17 @@ public partial class PlayerController : CharacterBody2D
 		Velocity = velocity;
 	}
 
-	private void GetGravity(Vector2 velocity, double delta, bool isOnFloor)
+	void GetGravity(Vector2 velocity, double delta, bool isOnFloor)
 	{
-		if (isOnFloor) return;
+		if (isOnFloor) 
+			return;
+
 		velocity.Y += _gravity * (float)delta;
 		Velocity = velocity;
 	}
+
 	// Method to handle player animations based on velocity
-	private void PlayerAnimation(Vector2 velocity)
+	void PlayerAnimation(Vector2 velocity)
 	{
 		if (velocity.Y != 0)
 		{
@@ -93,10 +93,12 @@ public partial class PlayerController : CharacterBody2D
 			_animatedSprite2D.Play(Mathf.Abs(velocity.X) > 0 ? "Run" : "Idle");
 		}
 	}
+
 	// Method to flip the player's direction based on movement
-	private void FlipPLayer(float dir)
+	void FlipPLayer(float dir)
 	{
-		var scale = Scale;
+		Vector2 scale = Scale;
+
 		if (dir < 0 && _isFacingRight || dir > 0 && !_isFacingRight)
 		{
 			scale.X *= -1;
