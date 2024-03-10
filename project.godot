@@ -11,9 +11,14 @@ config_version=5
 [application]
 
 config/name="Red Hood"
+config/tags=PackedStringArray("2d_game")
 run/main_scene="res://game_scene.tscn"
 config/features=PackedStringArray("4.2", "C#", "Mobile")
 config/icon="res://icon.svg"
+
+[display]
+
+window/stretch/mode="canvas_items"
 
 [dotnet]
 
@@ -42,3 +47,5 @@ ui_right={
 
 textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="mobile"
+2d/snap/snap_2d_transforms_to_pixel=true
+2d/snap/snap_2d_vertices_to_pixel=true

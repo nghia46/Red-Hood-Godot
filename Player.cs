@@ -1,15 +1,17 @@
-using Godot;
+global using Godot;
 
 public partial class Player : CharacterBody2D
 {
 	[Export] public float Speed = 100.0f;
-	[Export] public float JumpVelocity = -400.0f;
-
-	private AnimatedSprite2D animatedSprite2D;
+	[Export] public float JumpVelocity = -350.0f;
+	[Export] public float CoyoteJumpTime = 0.2f; // Adjust as needed
+	bool canCoyoteJump = false;
+	float coyoteJumpTimer = 0.0f;
+	AnimatedSprite2D animatedSprite2D;
 
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
-	private bool isFacingRight;
+	bool isFacingRight;
 	public override void _Ready()
 	{
 		animatedSprite2D = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
@@ -22,9 +24,8 @@ public partial class Player : CharacterBody2D
 		// Add the gravity. ]
 		//note: if the player is on the floor reset the velocity
 		velocity.Y += !IsOnFloor() ? gravity * (float)delta : 0;
-
-		// Get the input direction and handle the movement/deceleration.
-		// As good practice, you should replace UI actions with custom gameplay actions.
+		//Action
+		CheckCoyoteJump(delta);
 		PlayerMoveAndJump(direction, velocity);
 		PlayerAnimation(velocity);
 		FlipPLayer(velocity.X);
@@ -45,18 +46,44 @@ public partial class Player : CharacterBody2D
 
 	private void PlayerMoveAndJump(Vector2 direction, Vector2 velocity)
 	{
+
 		// Handle Move.
 		velocity.X = direction != Vector2.Zero ? direction.X * Speed : Mathf.MoveToward(velocity.X, 0, Speed);
-		// Handle Jump.
-		velocity.Y = Input.IsActionJustPressed("ui_accept") && IsOnFloor() ? JumpVelocity : velocity.Y;
+		// Handle regular Jump and Coyote Jump
+		if (Input.IsActionJustPressed("ui_accept"))
+		{
+			if (IsOnFloor() || canCoyoteJump)
+			{
+				// Perform regular jump if on the floor or allowed coyote jump
+				velocity.Y = JumpVelocity;
+				canCoyoteJump = false;
+			}
+		}
+
 		//Set velocity
 		Velocity = velocity;
 	}
-
+	private void CheckCoyoteJump(double delta)
+	{
+		// Check for coyote jump
+		if (IsOnFloor())
+		{
+			canCoyoteJump = true;
+		}
+		else
+		{
+			coyoteJumpTimer += (float)delta;
+			if (coyoteJumpTimer >= CoyoteJumpTime)
+			{
+				canCoyoteJump = false;
+				coyoteJumpTimer = 0.0f;
+			}
+		}
+	}
 
 	private void FlipPLayer(float dir)
 	{
-		var scale = Scale;
+		Vector2 scale = Scale;
 		if (dir < 0 && isFacingRight || dir > 0 && !isFacingRight)
 		{
 			scale.X *= -1;
