@@ -1,13 +1,13 @@
-global using Godot;
-
+using Godot;
+namespace Redhood;
 public partial class Player : CharacterBody2D
 {
 	[Export] public float Speed = 100.0f;
 	[Export] public float JumpVelocity = -350.0f;
-	[Export] public float CoyoteJumpTime = 0.2f; // Adjust as needed
+	[Export] public float CoyoteJumpTime = 0.2f;
 	bool canCoyoteJump = false;
 	float coyoteJumpTimer = 0.0f;
-	AnimatedSprite2D animatedSprite2D;
+	private AnimatedSprite2D animatedSprite2D;
 
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
@@ -17,6 +17,7 @@ public partial class Player : CharacterBody2D
 		animatedSprite2D = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 		isFacingRight = true;
 	}
+
 	public override void _Process(double delta)
 	{
 		Vector2 direction = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down");
@@ -89,6 +90,7 @@ public partial class Player : CharacterBody2D
 			scale.X *= -1;
 			isFacingRight = !isFacingRight;
 		}
+
 		Scale = scale;
 	}
 }
